@@ -7,6 +7,8 @@ import div1 as one
 count=0
 cap = cv2.VideoCapture(0) #cap is an object that stores the camera properties. Cap is used to retrieve camera options.
 
+tracker = "z"
+
 while(cap.isOpened()):
 	# Capture frame-by-frame
 	ret, frame = cap.read() #reads a frame and returns to ret, frame.
@@ -23,11 +25,17 @@ while(cap.isOpened()):
 
 	coord = one.find_largest(image_clusters, frame)
 
-	one.track_coordinates(coord)
+	grid_num = one.track_coordinates(coord)
+	# print grid_num
+
+	tracker = one.form_string(tracker, grid_num)
+
+	tracker = one.check_tracker(tracker)
 
 	# Display the resulting frame
 	cv2.imshow('frame name',frame)
 	if cv2.waitKey(1) & 0xFF == ord('q'):
+		print tracker
 		print count
 		break
 

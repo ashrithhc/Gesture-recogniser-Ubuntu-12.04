@@ -2,12 +2,14 @@ import numpy as np
 import cv2
 import sys, Image, ImageDraw
 import colorsys
+import os
+import time
 
 def flip_frame(cap, Img):
 	Img = cv2.flip(Img, 1)
 	width = cap.get(3) #Get the width of the frame.
 	height = cap.get(4) #Get the height of the frame.
-	print width,height
+	# print width,height
 	return Img
 
 def find_clusters(Img):
@@ -49,6 +51,70 @@ def find_largest(image_clusters, Img):
 def draw_circle(rad, x, y, Img):
 	cv2.circle(Img, (x, y), rad, (0, 0, 255), 5)
 
-def track_coordinates(coord):
+def track_coordinates(coord): # Returns the grid number of the object.
 	# print coord[0], coord[1]
-	
+	if coord[1] < 160:
+		if coord[0] < 160:
+			return "a"
+		elif coord[0] < 320:
+			return "b"
+		elif coord[0] < 480:
+			return "c"
+		else:
+			return "d"
+	elif coord[1] < 320:
+		if coord[0] < 160:
+			return "e"
+		elif coord[0] < 320:
+			return "f"
+		elif coord[0] < 480:
+			return "g"
+		else:
+			return "h"
+	else:
+		if coord[0] < 120:
+			return "i"
+		elif coord[0] < 240:
+			return "j"
+		elif coord[0] < 360:
+			return "k"
+		else:
+			return "l"
+
+def form_string(tracker, grid_num): #forms the string that contains the total object tracking.
+	if len(tracker) == 0:
+		return str(grid_num)
+	elif str(grid_num) == tracker[len(tracker)-1] :
+		return tracker
+	else:
+		return tracker + str(grid_num)
+
+def check_tracker(tracker):
+	if len(tracker) > 6:
+
+		if tracker[-6:] == "abcdhl":
+			os.system('google-chrome')
+			# os.system('xdotool search "Google Chrome" windowactivate --sync key Ctrl+t')
+			os.system('xdotool key ctrl+l')
+			os.system('xdotool type "facebook.com"')
+			os.system('xdotool key KP_Enter')
+			return "z"
+
+		elif tracker[-6:] == "lhdcba":
+			os.system('rhythmbox')
+			os.system('xdotool search "rhythmbox" windowactivate --sync key ctrl+space')
+			return "z"
+
+		elif tracker[-6:] == "aeijkl":
+			os.system('gnome-terminal')
+			os.system('xdotool type "sudo su"')
+			os.system('xdotool key KP_Enter')
+			time.sleep(1)
+			os.system('xdotool type "helloworld"')
+			os.system('xdotool key KP_Enter')
+			return "z"
+
+		else:
+			return tracker
+	else:
+		return tracker
